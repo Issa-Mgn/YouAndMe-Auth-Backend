@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const authRoutes = require('./routes/authRoutes');
 const partnerRoutes = require('./routes/partnerRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const appRoutes = require('./routes/appRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 
@@ -17,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/partners', partnerRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/app', appRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Health check
 app.get('/', (req, res) => {

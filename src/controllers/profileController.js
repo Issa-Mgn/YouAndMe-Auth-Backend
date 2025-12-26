@@ -39,4 +39,29 @@ const uploadAvatar = async (req, res) => {
     }
 };
 
-module.exports = { uploadAvatar };
+const getProfileStats = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const user = await userService.getUserByUid(uid);
+        if (!user.couple_id) {
+            return res.status(200).json({ moments: 0, days: 0, hearts: 0, videos: 0 });
+        }
+        const stats = await userService.getStats(uid, user.couple_id);
+        res.status(200).json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const updateToken = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const { token } = req.body;
+        await userService.updateFcmToken(uid, token);
+        res.status(200).json({ message: 'Token updated' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+module.exports = { uploadAvatar, getProfileStats, updateToken };

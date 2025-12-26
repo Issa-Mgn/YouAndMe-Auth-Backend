@@ -23,13 +23,17 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
+    "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "firebase-admin": "^13.6.0",
     "helmet": "^8.1.0",
     "imagekit": "^6.0.0",
+    "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "socket.io": "^4.8.3",
     "zod": "^4.2.1"
   }
 }

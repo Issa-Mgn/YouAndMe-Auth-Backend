@@ -1,3 +1,4 @@
+const { CoupleService } = require('../services/coupleService');
 const { UserService } = require('../services/userService');
 const { z } = require('zod');
 
@@ -21,13 +22,37 @@ const linkPartner = async (req, res) => {
         const { partnerCode } = validation.data;
 
         const result = await userService.linkPartner(uid, partnerCode);
-        res.status(200).json({ message: 'Partners linked successfully', ...result });
+        res.status(200).json({ message: 'Success', ...result });
     } catch (error) {
         console.error('Link Partner Error:', error);
-        // Determine status code based on error message (simplistic approach)
-        const status = error.message.includes('not found') || error.message.includes('invalid') ? 404 : 400;
-        res.status(status).json({ error: error.message || 'Internal Server Error' });
+        res.status(400).json({ error: error.message || 'Internal Server Error' });
     }
 };
 
-module.exports = { linkPartner };
+const requestBreakup = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const user = await userService.getUserByUid(uid);
+        if (!user.couple_id) return res.status(400).json({ error: 'Not in a couple' });
+
+        const result = await CoupleService.requestBreakup(user.couple_id);
+        res.status(200).json({ message: 'Breakup requested. Disconnection in 10 days.', ...result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const cancelBreakup = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const user = await userService.getUserByUid(uid);
+        if (!user.couple_id) return res.status(400).json({ error: 'Not in a couple' });
+
+        const result = await CoupleService.cancelBreakup(user.couple_id);
+        res.status(200).json({ message: 'Breakup cancelled. Your duo is active again!', ...result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { linkPartner, requestBreakup, cancelBreakup };

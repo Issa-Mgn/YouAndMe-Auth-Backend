@@ -52,50 +52,9 @@ class UserService {
     }
 
     async linkPartner(uid, partnerCode) {
-        // 1. Get current user
-        const { data: currentUser, error: userError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', uid)
-            .single();
-
-        if (userError || !currentUser) throw new Error('User not found');
-        if (currentUser.unique_code === partnerCode) throw new Error('Cannot link with yourself');
-        if (currentUser.partner_code) throw new Error('User already has a partner');
-
-        // 2. Find partner by code
-        const { data: partner, error: partnerError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('unique_code', partnerCode)
-            .single();
-
-        if (partnerError || !partner) throw new Error('Partner code invalid');
-        if (partner.partner_code) throw new Error('Partner already linked');
-
-        // 3. Link both users (Sequential updates)
-
-        // Update Current User
-        const { error: updateCurrentUserError } = await supabase
-            .from('users')
-            .update({ partner_code: partnerCode })
-            .eq('id', uid);
-
-        if (updateCurrentUserError) throw new Error('Failed to update current user');
-
-        // Update Partner
-        const { error: updatePartnerError } = await supabase
-            .from('users')
-            .update({ partner_code: currentUser.unique_code })
-            .eq('id', partner.id);
-
-        if (updatePartnerError) {
-            // Rollback current user update (manual compensation)
-            await supabase.from('users').update({ partner_code: null }).eq('id', uid);
-            throw new Error('Failed to link partner');
-        }
-
-        return { currentUser: { ...currentUser, partner_code: partnerCode }, partner };
+        // This is now handled by CoupleService for the reciprocal logic
+        const { CoupleService } = require('./coupleService');
+        return CoupleService.handlePairing(uid, partnerCode);
     }
 
     async updateAvatar(uid, avatarUrl) {
@@ -110,10 +69,35 @@ class UserService {
         return data;
     }
 
+    async updateFcmToken(uid, token) {
+        await supabase.from('users').update({ fcm_token: token }).eq('id', uid);
+    }
+
     async getUserByUid(uid) {
-        const { data, error } = await supabase.from('users').select('*').eq('id', uid).single();
+        const { data, error } = await supabase.from('users').select('*, couple:couples!fk_user_couple(*)').eq('id', uid).single();
         if (error) throw error;
         return data;
+    }
+
+    async getStats(userId, coupleId) {
+        // Counts for Profile stats
+        const { count: souvenirsCount } = await supabase.from('souvenirs').select('*', { count: 'exact', head: true }).eq('couple_id', coupleId);
+        const { data: likesData } = await supabase.from('souvenirs').select('likes_count').eq('couple_id', coupleId);
+        const heartsCount = likesData.reduce((acc, curr) => acc + (curr.likes_count || 0), 0);
+        const { count: videosCount } = await supabase.from('souvenirs').select('*', { count: 'exact', head: true }).eq('couple_id', coupleId).eq('media_type', 'video');
+
+        // Days together
+        const { data: couple } = await supabase.from('couples').select('started_at').eq('id', coupleId).single();
+        const start = new Date(couple.started_at);
+        const now = new Date();
+        const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
+
+        return {
+            moments: souvenirsCount || 0,
+            days: diff,
+            hearts: heartsCount || 0,
+            videos: videosCount || 0
+        };
     }
 }
 
