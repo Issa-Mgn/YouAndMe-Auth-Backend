@@ -33,11 +33,28 @@ class CoupleService {
         // 4. Check if reciprocal link exists
         if (partner.partner_code === currentUser.unique_code) {
             // Perfect match! Create couple
+            
+            // Generate a shared token for the couple
+            const { generateUniqueCode } = require('../utils/codeGenerator');
+            let coupleToken = generateUniqueCode();
+            let isUnique = false;
+
+            // Simple retry loop for uniqueness
+            while (!isUnique) {
+                const { data } = await supabase.from('couples').select('id').eq('token', coupleToken).single();
+                if (!data) {
+                    isUnique = true;
+                } else {
+                    coupleToken = generateUniqueCode();
+                }
+            }
+
             const { data: couple, error: coupleError } = await supabase
                 .from('couples')
                 .insert({
                     user1_id: currentUser.id,
                     user2_id: partner.id,
+                    token: coupleToken, // Le token qui concerne les deux utilisateurs
                     started_at: new Date().toISOString()
                 })
                 .select()
