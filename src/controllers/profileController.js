@@ -62,6 +62,37 @@ const updateToken = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-}
+};
 
-module.exports = { uploadAvatar, getProfileStats, updateToken };
+const updateProfile = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const { name, display_name } = req.body;
+
+        if (!name && !display_name) {
+            res.status(400).json({ error: 'Name or display_name is required' });
+            return;
+        }
+
+        // Mettre à jour le nom et display_name
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (display_name) updateData.display_name = display_name;
+
+        const { data: updatedUser, error: updateError } = await supabase
+            .from('users')
+            .update(updateData)
+            .eq('id', uid)
+            .select()
+            .single();
+
+        if (updateError) throw updateError;
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error('Update Profile Error:', error);
+        res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
+};
+
+module.exports = { uploadAvatar, getProfileStats, updateToken, updateProfile };
