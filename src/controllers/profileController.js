@@ -68,17 +68,21 @@ const updateToken = async (req, res) => {
 const updateProfile = async (req, res) => {
     try {
         const { uid } = req.user;
-        const { display_name } = req.body;
+        const { display_name, mood } = req.body;
 
-        if (!display_name) {
-            res.status(400).json({ error: 'display_name is required' });
+        const updateData = {};
+        if (display_name) updateData.display_name = display_name;
+        if (mood) updateData.mood = mood;
+
+        if (Object.keys(updateData).length === 0) {
+            res.status(400).json({ error: 'Nothing to update' });
             return;
         }
 
-        // Mettre à jour seulement display_name (la colonne name n'existe pas dans le schéma)
+        // Mettre à jour les champs fournis
         const { data: updatedUser, error: updateError } = await supabase
             .from('users')
-            .update({ display_name })
+            .update(updateData)
             .eq('id', uid)
             .select()
             .single();
@@ -92,4 +96,30 @@ const updateProfile = async (req, res) => {
     }
 };
 
-module.exports = { uploadAvatar, getProfileStats, updateToken, updateProfile };
+const updateMood = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const { mood } = req.body;
+
+        if (!mood) {
+            res.status(400).json({ error: 'mood is required' });
+            return;
+        }
+
+        const { data: updatedUser, error: updateError } = await supabase
+            .from('users')
+            .update({ mood })
+            .eq('id', uid)
+            .select()
+            .single();
+
+        if (updateError) throw updateError;
+
+        res.status(200).json({ mood: updatedUser.mood });
+    } catch (error) {
+        console.error('Update Mood Error:', error);
+        res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
+};
+
+module.exports = { uploadAvatar, getProfileStats, updateToken, updateProfile, updateMood };

@@ -16,6 +16,7 @@ CREATE TABLE users (
   couple_id UUID, -- Lien vers la table de jumelage
   avatar_url TEXT,
   fcm_token TEXT,
+  mood TEXT, -- Humeur du jour (ex: 'Très amoureux', 'Tu me manques', etc.)
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

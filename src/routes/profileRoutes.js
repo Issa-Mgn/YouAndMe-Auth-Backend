@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { uploadAvatar, getProfileStats, updateToken, updateProfile } = require('../controllers/profileController');
+const { uploadAvatar, getProfileStats, updateToken, updateProfile, updateMood } = require('../controllers/profileController');
 const { authMiddleware } = require('../middleware/authMiddleware');
 const multer = require('multer');
 
@@ -10,5 +10,6 @@ router.post('/avatar', authMiddleware, upload.single('image'), uploadAvatar);
 router.get('/stats', authMiddleware, getProfileStats);
 router.post('/token', authMiddleware, updateToken);
 router.put('/update', authMiddleware, updateProfile);
+router.put('/mood', authMiddleware, updateMood);
 
 module.exports = router;
