@@ -1,4 +1,5 @@
 const { UserService } = require('../services/userService');
+const { supabase } = require('../config/supabase');
 const { imagekit } = require('../config/imagekit');
 
 const userService = new UserService();
