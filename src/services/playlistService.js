@@ -4,6 +4,9 @@ const { NotificationService } = require('./notificationService');
 
 class PlaylistService {
     async addSong(userId, coupleId, partnerId, title, artist, songFile, coverFile) {
+        console.log('PlaylistService.addSong - songFile:', songFile ? 'Present' : 'Missing');
+        console.log('PlaylistService.addSong - coverFile:', coverFile ? 'Present' : 'Missing');
+        
         // Upload song to Cloudinary
         return new Promise((resolve, reject) => {
             const songStream = cloudinary.uploader.upload_stream(

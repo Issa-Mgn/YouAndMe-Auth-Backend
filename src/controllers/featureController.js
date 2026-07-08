@@ -119,6 +119,9 @@ const addSong = async (req, res) => {
         const { title, artist } = req.body;
         const user = await userService.getUserByUid(uid);
 
+        console.log('addSong - req.files:', req.files);
+        console.log('addSong - req.body:', req.body);
+
         if (!user.couple_id) return res.status(400).json({ error: 'Not paired' });
 
         const partnerId = user.couple.user1_id === uid ? user.couple.user2_id : user.couple.user1_id;
@@ -126,9 +129,13 @@ const addSong = async (req, res) => {
         const songFile = req.files?.song ? req.files.song[0] : null;
         const coverFile = req.files?.cover ? req.files.cover[0] : null;
 
+        console.log('songFile:', songFile ? 'Present' : 'Missing');
+        console.log('coverFile:', coverFile ? 'Present' : 'Missing');
+
         const song = await PlaylistService.addSong(uid, user.couple_id, partnerId, title, artist, songFile, coverFile);
         res.status(201).json(song);
     } catch (error) {
+        console.error('addSong error:', error);
         res.status(500).json({ error: error.message });
     }
 };
