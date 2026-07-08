@@ -197,7 +197,7 @@ module.exports = {
     // Decision Wheel
     createDecision,
     getDecisions,
-    spinDecisionWheel,
+    spinWheel: spinDecisionWheel,  // Alias
     
     // Ephemeral Thoughts
     sendThought,
