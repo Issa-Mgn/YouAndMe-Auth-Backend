@@ -22,7 +22,7 @@ router.get('/agenda', authMiddleware, getEvents);
 router.delete('/agenda/:id', authMiddleware, deleteEvent);
 
 // Playlist
-router.post('/playlist', authMiddleware, upload.single('song'), addSong);
+router.post('/playlist', authMiddleware, upload.fields([{ name: 'song', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), addSong);
 router.get('/playlist', authMiddleware, getPlaylist);
 router.delete('/playlist/:id', authMiddleware, deleteSong);
 

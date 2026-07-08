@@ -123,7 +123,10 @@ const addSong = async (req, res) => {
 
         const partnerId = user.couple.user1_id === uid ? user.couple.user2_id : user.couple.user1_id;
 
-        const song = await PlaylistService.addSong(uid, user.couple_id, partnerId, title, artist, req.file);
+        const songFile = req.files?.song ? req.files.song[0] : null;
+        const coverFile = req.files?.cover ? req.files.cover[0] : null;
+
+        const song = await PlaylistService.addSong(uid, user.couple_id, partnerId, title, artist, songFile, coverFile);
         res.status(201).json(song);
     } catch (error) {
         res.status(500).json({ error: error.message });

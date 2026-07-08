@@ -3,27 +3,47 @@ const { cloudinary } = require('../config/cloudinary');
 const { NotificationService } = require('./notificationService');
 
 class PlaylistService {
-    async addSong(userId, coupleId, partnerId, title, artist, file) {
-        // Upload to Cloudinary
-        // Note: For audio, we use resource_type: 'video' (which includes audio) or 'auto'
+    async addSong(userId, coupleId, partnerId, title, artist, songFile, coverFile) {
+        // Upload song to Cloudinary
         return new Promise((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
+            const songStream = cloudinary.uploader.upload_stream(
                 {
                     resource_type: 'auto',
                     folder: `couples/${coupleId}/playlist`,
                 },
-                async (error, result) => {
+                async (error, songResult) => {
                     if (error) return reject(error);
 
                     try {
+                        let coverUrl = null;
+
+                        // Upload cover if provided
+                        if (coverFile) {
+                            const coverUpload = await new Promise((resolveCover, rejectCover) => {
+                                const coverStream = cloudinary.uploader.upload_stream(
+                                    {
+                                        resource_type: 'image',
+                                        folder: `couples/${coupleId}/playlist/covers`,
+                                    },
+                                    (coverError, coverResult) => {
+                                        if (coverError) return rejectCover(coverError);
+                                        resolveCover(coverResult);
+                                    }
+                                );
+                                coverStream.end(coverFile.buffer);
+                            });
+                            coverUrl = coverUpload.secure_url;
+                        }
+
                         const { data, error: dbError } = await supabase
                             .from('playlist')
                             .insert({
                                 couple_id: coupleId,
                                 user_id: userId,
-                                song_url: result.secure_url,
+                                song_url: songResult.secure_url,
                                 title,
                                 artist,
+                                cover: coverUrl,
                             })
                             .select()
                             .single();
@@ -39,7 +59,7 @@ class PlaylistService {
                     }
                 }
             );
-            stream.end(file.buffer);
+            songStream.end(songFile.buffer);
         });
     }
 
