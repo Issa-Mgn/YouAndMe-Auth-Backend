@@ -1,5 +1,4 @@
 const { supabase } = require('../config/supabase');
-const admin = require('../config/firebase-admin');
 
 // Helper pour obtenir le couple_id
 const getCoupleId = async (userId) => {
