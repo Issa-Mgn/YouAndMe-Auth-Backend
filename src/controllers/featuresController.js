@@ -191,51 +191,95 @@ const markThoughtRead = async (req, res) => {
     }
 };
 
+// ==================== PLACEHOLDER FUNCTIONS ====================
+
+const uploadVlog = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getVlogs = async (req, res) => res.json([]);
+const unlockVlog = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+
+const getDailyFortune = async (req, res) => res.json({ fortune: 'Votre amour grandira aujourd\'hui ❤️' });
+const getTarotCard = async (req, res) => res.json({ card: 'Les Amoureux', meaning: 'Union et harmonie' });
+
+const saveDrawing = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getDrawings = async (req, res) => res.json([]);
+
+const getDailyQuestions = async (req, res) => res.json([]);
+const submitAnswer = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getQuestionResults = async (req, res) => res.json({});
+
+const addBattleSong = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getBattleSongs = async (req, res) => res.json([]);
+const voteSong = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+
+const addSecret = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getSecrets = async (req, res) => res.json([]);
+const deleteSecret = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+
+const sendAnonymous = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getAnonymousMessages = async (req, res) => res.json([]);
+const revealMessage = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+
+const createCoupon = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getCoupons = async (req, res) => res.json([]);
+const useCoupon = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+
+const createPuzzle = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+const getPuzzles = async (req, res) => res.json([]);
+const updatePuzzleProgress = async (req, res) => res.status(501).json({ error: 'Non implémenté' });
+
 // ==================== EXPORTS ====================
 
 module.exports = {
     // Decision Wheel
     createDecision,
     getDecisions,
-    spinWheel: spinDecisionWheel,  // Alias
+    spinWheel: spinDecisionWheel,
     
     // Ephemeral Thoughts
     sendThought,
     getThoughts,
     markThoughtRead,
     
-    // Placeholders for other features (implement as needed)
-    uploadVlog: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getVlogs: async (req, res) => res.json([]),
-    unlockVlog: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
+    // Vlogs
+    uploadVlog,
+    getVlogs,
+    unlockVlog,
     
-    getDailyFortune: async (req, res) => res.json({ fortune: 'Votre amour grandira aujourd\'hui ❤️' }),
-    getTarotCard: async (req, res) => res.json({ card: 'Les Amoureux', meaning: 'Union et harmonie' }),
+    // Fortune
+    getDailyFortune,
+    getTarotCard,
     
-    saveDrawing: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getDrawings: async (req, res) => res.json([]),
+    // Canvas
+    saveDrawing,
+    getDrawings,
     
-    getDailyQuestions: async (req, res) => res.json([]),
-    submitAnswer: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getQuestionResults: async (req, res) => res.json({}),
+    // Questions
+    getDailyQuestions,
+    submitAnswer,
+    getQuestionResults,
     
-    addBattleSong: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getBattleSongs: async (req, res) => res.json([]),
-    voteSong: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
+    // Playlist Battle
+    addBattleSong,
+    getBattleSongs,
+    voteSong,
     
-    addSecret: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getSecrets: async (req, res) => res.json([]),
-    deleteSecret: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
+    // Secret Box
+    addSecret,
+    getSecrets,
+    deleteSecret,
     
-    sendAnonymous: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getAnonymousMessages: async (req, res) => res.json([]),
-    revealMessage: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
+    // Anonymous
+    sendAnonymous,
+    getAnonymousMessages,
+    revealMessage,
     
-    createCoupon: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getCoupons: async (req, res) => res.json([]),
-    useCoupon: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
+    // Coupons
+    createCoupon,
+    getCoupons,
+    useCoupon,
     
-    createPuzzle: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
-    getPuzzles: async (req, res) => res.json([]),
-    updatePuzzleProgress: async (req, res) => res.status(501).json({ error: 'Non implémenté' }),
+    // Puzzles
+    createPuzzle,
+    getPuzzles,
+    updatePuzzleProgress,
 };
