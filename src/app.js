@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/partners', partnerRoutes);
 app.use('/api/profile', profileRoutes);
-app.use('/api/app', appRoutes);
+app.use('/api', appRoutes);  // Changed from /api/app to /api
 app.use('/api/messages', messageRoutes);
 
 // Health check

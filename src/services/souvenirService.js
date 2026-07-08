@@ -42,6 +42,30 @@ class SouvenirService {
         return data;
     }
 
+    async deleteSouvenir(souvenirId, coupleId) {
+        // Verify ownership
+        const { data: souvenir, error: fetchError } = await supabase
+            .from('souvenirs')
+            .select('*')
+            .eq('id', souvenirId)
+            .eq('couple_id', coupleId)
+            .single();
+
+        if (fetchError) throw fetchError;
+        if (!souvenir) throw new Error('Souvenir not found');
+
+        // Delete from database
+        const { error: deleteError } = await supabase
+            .from('souvenirs')
+            .delete()
+            .eq('id', souvenirId);
+
+        if (deleteError) throw deleteError;
+
+        // TODO: Delete from ImageKit if needed
+        return { message: 'Souvenir deleted successfully' };
+    }
+
     async likeSouvenir(souvenirId, partnerId) {
         const { data, error } = await supabase.rpc('increment_likes', { row_id: souvenirId });
         // Note: You need a Postgres function 'increment_likes' or just a select/update.

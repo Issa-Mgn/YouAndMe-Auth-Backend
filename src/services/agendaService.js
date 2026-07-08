@@ -34,14 +34,25 @@ class AgendaService {
         return data;
     }
 
-    async deleteEvent(eventId, userId) {
-        const { error } = await supabase
+    async deleteEvent(eventId, coupleId) {
+        // Verify ownership
+        const { data: event, error: fetchError } = await supabase
+            .from('agenda')
+            .select('*')
+            .eq('id', eventId)
+            .eq('couple_id', coupleId)
+            .single();
+
+        if (fetchError) throw fetchError;
+        if (!event) throw new Error('Event not found');
+
+        // Delete from database
+        const { error: deleteError } = await supabase
             .from('agenda')
             .delete()
-            .eq('id', eventId)
-            .eq('user_id', userId);
+            .eq('id', eventId);
 
-        if (error) throw error;
+        if (deleteError) throw deleteError;
         return { success: true };
     }
 }

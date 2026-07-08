@@ -36,6 +36,36 @@ const getSouvenirs = async (req, res) => {
     }
 };
 
+const deleteSouvenir = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const { id } = req.params;
+        const user = await userService.getUserByUid(uid);
+
+        if (!user.couple_id) return res.status(400).json({ error: 'Not paired' });
+
+        await SouvenirService.deleteSouvenir(id, user.couple_id);
+        res.status(200).json({ message: 'Souvenir deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const likeSouvenir = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const { id } = req.params;
+        const user = await userService.getUserByUid(uid);
+
+        if (!user.couple_id) return res.status(400).json({ error: 'Not paired' });
+
+        await SouvenirService.likeSouvenir(id, uid);
+        res.status(200).json({ message: 'Souvenir liked' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // AGENDA
 const addEvent = async (req, res) => {
     try {
@@ -62,6 +92,21 @@ const getEvents = async (req, res) => {
 
         const events = await AgendaService.getEvents(user.couple_id);
         res.status(200).json(events);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const deleteEvent = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const { id } = req.params;
+        const user = await userService.getUserByUid(uid);
+
+        if (!user.couple_id) return res.status(400).json({ error: 'Not paired' });
+
+        await AgendaService.deleteEvent(id, user.couple_id);
+        res.status(200).json({ message: 'Event deleted' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -98,8 +143,23 @@ const getPlaylist = async (req, res) => {
     }
 };
 
+const deleteSong = async (req, res) => {
+    try {
+        const { uid } = req.user;
+        const { id } = req.params;
+        const user = await userService.getUserByUid(uid);
+
+        if (!user.couple_id) return res.status(400).json({ error: 'Not paired' });
+
+        await PlaylistService.deleteSong(id, user.couple_id);
+        res.status(200).json({ message: 'Song deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
-    addSouvenir, getSouvenirs,
-    addEvent, getEvents,
-    addSong, getPlaylist
+    addSouvenir, getSouvenirs, deleteSouvenir, likeSouvenir,
+    addEvent, getEvents, deleteEvent,
+    addSong, getPlaylist, deleteSong
 };

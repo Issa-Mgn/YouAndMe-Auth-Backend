@@ -53,6 +53,30 @@ class PlaylistService {
         if (error) throw error;
         return data;
     }
+
+    async deleteSong(songId, coupleId) {
+        // Verify ownership
+        const { data: song, error: fetchError } = await supabase
+            .from('playlist')
+            .select('*')
+            .eq('id', songId)
+            .eq('couple_id', coupleId)
+            .single();
+
+        if (fetchError) throw fetchError;
+        if (!song) throw new Error('Song not found');
+
+        // Delete from database
+        const { error: deleteError } = await supabase
+            .from('playlist')
+            .delete()
+            .eq('id', songId);
+
+        if (deleteError) throw deleteError;
+
+        // TODO: Delete from Cloudinary if needed
+        return { message: 'Song deleted successfully' };
+    }
 }
 
 module.exports = { PlaylistService: new PlaylistService() };
