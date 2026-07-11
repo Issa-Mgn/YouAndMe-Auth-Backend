@@ -6,7 +6,7 @@ const partnerRoutes = require('./routes/partnerRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const appRoutes = require('./routes/appRoutes');
 const messageRoutes = require('./routes/messageRoutes');
-const featuresRoutes = require('./routes/featuresRoutes');
+// const featuresRoutes = require('./routes/featuresRoutes'); // Temporarily disabled - Supabase not configured
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use('/api/partners', partnerRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api', appRoutes);  // Changed from /api/app to /api
 app.use('/api/messages', messageRoutes);
-app.use('/api/features', featuresRoutes);
+// app.use('/api/features', featuresRoutes); // Temporarily disabled - Supabase not configured
 
 // Health check
 app.get('/', (req, res) => {
